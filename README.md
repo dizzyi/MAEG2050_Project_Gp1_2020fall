@@ -4,4 +4,4 @@
 
 ## Inverse Kinematics 
 
-![Inverse Kinematics](Media\Inverse_kinematics.jpg)
+![Inverse Kinematics](Media/Inverse_kinematics.jpg)
