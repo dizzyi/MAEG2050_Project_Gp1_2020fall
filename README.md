@@ -14,6 +14,7 @@
 - Move motor using keyboard
 - Calibrate
 - Parameteized locus
+- Test Walking Cycle
 
 ## Inverse Kinematics 
 ![Inverse Kinematics](Media/Inverse_kinematics.jpg)
