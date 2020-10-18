@@ -4,7 +4,9 @@
 
 ## Note
 - ~~Inverse Kinematics 17/10~~
+    - ~~Tangent Error 18/10~~ 
 - CAN bus comm
+    - ~~download Lib & init code 18/10~~
 - Move motor using keyboard
 - Calibrate
 - Parameteized locus
