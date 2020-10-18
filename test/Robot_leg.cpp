@@ -31,7 +31,9 @@ void RobotLeg::Update()
 {
     r = sqrt( pow(x,2) + pow(y,2));
     double theta_2 = Inverse_Cosine(r,b,f);
-    theta = atan(-y/x);
+    theta =   atan(-y/x) * ( x >  0 )
+            + atan( y/x) * ( x <  0 )
+            + M_PI / 2   * ( x == 0 );
     theta += theta_2;
 
     double beta = asin( sin(theta_2) / f * r );
@@ -41,25 +43,8 @@ void RobotLeg::Update()
     double x_e =   b * cos(theta) +   c * cos(delta);
     double y_e = - b * sin(theta) + - c * sin(delta);
 
-    phi = atan( y / x ) + Inverse_Cosine( sqrt( pow(x_e, 2) + pow(y_e, 2) ), b, d);
+    phi =   Inverse_Cosine( sqrt( pow(x_e, 2) + pow(y_e, 2) ), b, d)
+          + atan( y_e / x_e ) * ( x_e - a <  0 )
+          + atan(-y_e / x_e ) * ( x_e - a >  0 )
+          + M_PI / 2          * ( x_e - a == 0 );
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
