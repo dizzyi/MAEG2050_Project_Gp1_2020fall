@@ -21,16 +21,13 @@ int t = 0;
 //RobotLeg Leg(A_LENGHT,B_LENGHT,C_LENGHT,D_LENGHT,F_LENGHT,ALPHA_ANGLE);
 
 void setup() {
-  // put your setup code here, to run once:
-  /*pinMode(13,OUTPUT);
-  digitalWrite(13,HIGH);*/
   Serial.begin(9600);
-  /*
+  Serial.println("------------Starting Initalizaation------------");
   mcp2515.reset();
   mcp2515.setBitrate(CAN_125KBPS);
   mcp2515.setLoopbackMode();
   frame.can_dlc = 8;
-  frame.can_id = MOTOR_1_ID;*/
+  frame.can_id = MOTOR_1_ID;
   Serial.println("------------Initialization Finished ------------");
 }
 
