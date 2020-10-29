@@ -8,4 +8,6 @@
 #define F_LENGHT 150
 #define ALPHA_ANGLE 0.5
 
+#define ALL_SIG 6555
+
 #endif
