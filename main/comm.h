@@ -5,11 +5,13 @@
 
 MCP2515 mcp2515(10);
 
-struct data_read
+
+
+struct Motor_Controller
 {
   int16_t pos, spd, toq;
-  int8_t  temp, nu;
-  char ID;
+  int8_t  temp, nu, ID;
+  
 }__attribute__((packed));
 
 struct data_send
@@ -108,7 +110,7 @@ bool postInfo(struct can_frame * F, struct data_send * D){
   //mcp2515.sendMessage(F);
   return true;
 }
-
+/*
 void logInfo(struct data_read * D){
   Serial.print("Motor ");
   Serial.println(D->ID);
@@ -121,5 +123,5 @@ void logInfo(struct data_read * D){
   Serial.print("Torque  : ");
   Serial.println(D->toq);
 }
-
+*/
 #endif

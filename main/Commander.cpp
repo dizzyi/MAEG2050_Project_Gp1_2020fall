@@ -1,7 +1,7 @@
-#include "Robot_Leg.h"
+#include "Commander.h"
 #include <math.h>
 
-double RobotLeg::Inverse_Cosine(double r, double side, double top)
+double Commander::Inverse_Cosine(double r, double side, double top)
 {
     double r_sq = pow(r,2);
     double side_sq = pow(side,2);
@@ -18,7 +18,7 @@ double RobotLeg::Inverse_Cosine(double r, double side, double top)
 }
 
 
-void RobotLeg::Update(double _x, double _y)
+void Commander::UpdateAng(double _x, double _y)
 {
     x = _x;
     y = _y;
