@@ -36,7 +36,7 @@ void Commander::UpdateAng()
   double x_e =   b * cos(theta) +   c * cos(delta);
   double y_e = - b * sin(theta) + - c * sin(delta);
   
-  double r_e =  sqrt( pow(x_e, 2) + pow(y_e, 2) );
+  double r_e =  sqrt( pow(x_e - a, 2) + pow(y_e, 2) );
 
   phi =     Inverse_Cosine( r_e, b, d)
         +   atan( y_e / ( x_e - a ) )             * ( x_e - a <  0 )

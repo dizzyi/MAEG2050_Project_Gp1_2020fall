@@ -14,9 +14,14 @@ private:
   const int32_t motorID;
   
   void saturate(){
+    output = (int16_t)round(PIDout);
+    output = (PIDout >   ALL_SIG) * ( (short) ALL_SIG - output )
+           + (PIDout < - ALL_SIG) * ( (short)-ALL_SIG - output )
+           +                                            output  ;
+    /*
     if (PIDout >  ALL_SIG) output = (int16_t) ALL_SIG;
     if (PIDout < -ALL_SIG) output = (int16_t)-ALL_SIG;
-    output = (int16_t)round(PIDout);
+    output = (int16_t)round(PIDout);*/
   }
   
   void calculate_error(){
