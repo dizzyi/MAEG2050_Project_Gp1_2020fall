@@ -32,9 +32,12 @@ private:
   
   void calculate_PID(){
     PIDout  =  Pgain * error;
+    
     error_sum += error * Igain;
     PIDout +=  error_sum;
+    
     PIDout += Dgain * (error - last_error); 
+    
     Serial.print("  ");
     Serial.println(PIDout);
   }
