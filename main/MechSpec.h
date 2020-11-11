@@ -9,5 +9,6 @@
 #define ALPHA_ANGLE 0.73302083254
 
 #define ALL_SIG 6555
+#define WINDUP 600
 
 #endif
