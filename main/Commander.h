@@ -14,18 +14,12 @@ public:
 
     void UpdateAng();
 
-    double get_theta(long T){
-      if(T < 1200) return -15;
-      if(T < 2400) return 0;
-      return -70;
-      return 180 - theta / M_PI * 180.;
+    double get_theta(){
+      return 90 - theta / M_PI * 180.;
     } 
 
-    double get_phi(long T){
-      if(T < 1200) return 30;
-      if(T < 2400) return 70;
-      return 40;
-      return phi / M_PI * 180;
+    double get_phi(){
+      return phi / M_PI * 180 - 90;
     }
 
     long get_theta_num(){
@@ -38,9 +32,9 @@ public:
 
     void UpdateXY(long T){
       x = 0;
-      y = -500;
+      y = -550;
       if( T > 120 && T < 240) x = 100;
-      if( T > 240)            y = -450; 
+      if( T > 240)            y = -500; 
       /*
       if(T < 120 ){
         y = -500.;

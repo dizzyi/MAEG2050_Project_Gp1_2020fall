@@ -7,12 +7,13 @@ MCP2515 mcp2515(10);
 
 class Controller{
 private:
-  int16_t now_pos, output, last_pos, offset, now_spd, last_spd, cross;
+  int16_t now_pos, output, last_pos, offset, now_spd = 0, last_spd = 0;
   long acc_count=0;//------
   double Pgain, Igain, Dgain, PIDout = 0, counter = 0, Iout = 0; 
   int32_t error_sum = 0, error, setpoint, last_error = 0, Iterm;
   struct can_frame * frame_r;
   const int32_t motorID;
+  unsigned long last_time = 0;
   
   void saturate(){
     output = (int16_t)round(PIDout);
@@ -27,15 +28,15 @@ private:
   
   void calculate_error(){
     error = setpoint - (counter * 8192 + now_pos) + offset;
-    error = setpoint - acc_count + offset;
-    Serial.print("  total: ");
-    Serial.println(counter * 8192 + now_pos);
+    error = setpoint - acc_count ;
+    //Serial.print("  total: ");
+    //Serial.println(counter * 8192 + now_pos);
   }
   
   void calculate_PID(){
     PIDout  =  Pgain * error;
     
-    error_sum += error;
+    error_sum = ( error_sum + error ) * (abs(error) > 300);
 
     Iout = error_sum * Igain;
  
@@ -54,18 +55,10 @@ private:
         if( frame_r->can_id != motorID ) continue;
         now_pos = (int16_t) frame_r->data[0] << 8 | frame_r->data[1];
         now_spd = (int16_t) frame_r->data[2] << 8 | frame_r->data[3];
-        //Serial.print(frame_r->can_id,HEX);
-        Serial.print("16bit Angle     : ");
-        Serial.print(now_pos);
-        Serial.print("   speed : ");
-        Serial.print(now_spd);
-        /*Serial.print("HEX             : ");
-        Serial.println(now_pos,HEX);
-        Serial.print("mechanical angle: ");
-        Serial.println( now_pos / 8191.0 * 360.0 , 2);*/
+        //Serial.print("    Raw Angle : ");
+        //Serial.print(now_pos);
         return 0;  
       }
-      //else Serial.println("reading error");
     };
   }
 
@@ -81,40 +74,39 @@ public:
   void boot(){
     get_pos();
     offset = now_pos;
-    //acc_count = offset;//------
+    last_pos = now_pos;
   }
 
-  void set_setpoint(int32_t _set){
+  void set_setpoint(double _set){
     setpoint = _set / 360. * 8192 * 19;
   }
 
   void control_flow(){
     get_pos();
-    acc_count += (now_pos - last_pos);//------
+
+    now_spd = now_pos - last_pos;
+
+    if( abs(now_spd) > 4096){
+      if(now_spd > 0 && last_spd < 0) last_spd = now_spd - 8192;
+      if(now_spd < 0 && last_spd > 0) last_spd = now_spd + 8192;
+    }
+    else last_spd = now_spd;
+    
+    last_pos = now_pos;
+    
+    acc_count += last_spd;
+    //Serial.println(acc_count);
+    /*
+    acc_count += (now_pos - last_pos);
     if( abs(now_pos - last_pos)>4096 ){
       acc_count += 8192*((now_pos - last_pos)>0?-1:1);
-    }
-    Serial.print(" Acc: ");Serial.print(acc_count);
-    //cc_count += ;//------
-    /*
-    Serial.print(last_spd);
-    Serial.print("  ");
-    */
-    
-    cross = 0;
-    if( (now_pos - last_pos) > (4096) ) cross =  1;
-    if( (now_pos - last_pos) < (-4096) ) cross = -1;
-    
-    if(cross ==  1 && last_spd < 0) counter--;
-    if(cross == -1 && last_spd > 0) counter++;
-    cross = 0;
+    }*/
+    //Serial.println(acc_count);
     
     calculate_error();
     calculate_PID();
     saturate();
-    last_pos = now_pos;
     last_error = error;
-    last_spd = now_spd;
   }
 
   short get_output(){
