@@ -8,7 +8,7 @@
 #define F_LENGHT 460
 #define ALPHA_ANGLE 0.757629712
 
-#define ALL_SIG 6555
+#define ALL_SIG 3277
 #define WINDUP 600
 
 #endif

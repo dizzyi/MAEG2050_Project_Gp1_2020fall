@@ -54,9 +54,10 @@ private:
       if(mcp2515.readMessage(frame_r) == MCP2515::ERROR_OK){
         if( frame_r->can_id != motorID ) continue;
         now_pos = (int16_t) frame_r->data[0] << 8 | frame_r->data[1];
-        now_spd = (int16_t) frame_r->data[2] << 8 | frame_r->data[3];
-        //Serial.print("    Raw Angle : ");
-        //Serial.print(now_pos);
+        now_spd = (int16_t) frame_r->data[2] << 8 | frame_r->data[3];/*
+        Serial.print(motorID);
+        Serial.print("  Raw Angle : ");
+        Serial.print(now_pos);*/
         return 0;  
       }
     };
@@ -89,20 +90,19 @@ public:
     if( abs(now_spd) > 4096){
       if(now_spd > 0 && last_spd < 0) last_spd = now_spd - 8192;
       if(now_spd < 0 && last_spd > 0) last_spd = now_spd + 8192;
+      //if(now_spd * last_spd < 0) last_spd = now_spd + (last_spd/abs(last_spd))* 8192;
     }
     else last_spd = now_spd;
     
     last_pos = now_pos;
     
     acc_count += last_spd;
-    //Serial.println(acc_count);
     /*
-    acc_count += (now_pos - last_pos);
-    if( abs(now_pos - last_pos)>4096 ){
-      acc_count += 8192*((now_pos - last_pos)>0?-1:1);
-    }*/
-    //Serial.println(acc_count);
-    
+    Serial.print(motorID);
+    Serial.print(" ");
+    Serial.print(acc_count);
+    Serial.print(" ");
+    */
     calculate_error();
     calculate_PID();
     saturate();

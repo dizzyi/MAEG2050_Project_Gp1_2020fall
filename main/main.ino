@@ -5,8 +5,8 @@
 #define MOTOR_SEND_ID 0x200
 #define MOTOR_1_ID 0X201
 #define MOTOR_2_ID 0x202
-#define PGAIN 0.35
-#define IGAIN 0.0
+#define PGAIN 0.4
+#define IGAIN 0.1
 #define DGAIN 0.1
 
 struct can_frame  frame_read, frame_send;
@@ -39,30 +39,40 @@ void setup() {
 void loop() {
 
   Leg.UpdateXY( (t/10) % 360 );
+  
+  Serial.print("X: ");
+  Serial.print(Leg.getX());
+  Serial.print(" Y: ");
+  Serial.print(Leg.getY());
+  Serial.print(" ");
+
+  Serial.print("Xe: ");
+  Serial.print(Leg.getXe());
+  Serial.print(" Ye: ");
+  Serial.print(Leg.getYe());
+  Serial.print(" ");
+  
   Leg.UpdateAng();  
-/*
-  Serial.print(t);
+  
   Serial.print("  phi: ");
   Serial.print(Leg.get_phi());
   Serial.print("   theta: ");
   Serial.print(Leg.get_theta());
-  Serial.println("  ");
-  */
+  Serial.print("  ");
   
+  /*
+  motor_1.set_setpoint( Leg.get_phi((t/10) % 360 ) );
+  motor_1.control_flow();
+  motor_2.set_setpoint( Leg.get_theta((t/10) % 360 ) );
+  motor_2.control_flow();
+  */
   motor_1.set_setpoint( Leg.get_phi() );
   motor_1.control_flow();
   motor_2.set_setpoint( Leg.get_theta() );
   motor_2.control_flow();
-  
-  /*
-  motor_1.set_setpoint( t > 1800 ? 45 : 0 );
-  motor_1.control_flow();
-  motor_2.set_setpoint( t > 1800 ? -45 : 0 );
-  motor_2.control_flow();*/
 
-
-  //frame_send.data[0] = motor_1.get_output() >> 8;
-  //frame_send.data[1] = motor_1.get_output();
+  frame_send.data[0] = motor_1.get_output() >> 8;
+  frame_send.data[1] = motor_1.get_output();
   frame_send.data[2] = motor_2.get_output() >> 8;
   frame_send.data[3] = motor_2.get_output();
   frame_send.data[4] = 0;
@@ -72,6 +82,7 @@ void loop() {
   
   mcp2515.sendMessage(&frame_send);
   
-  t = (t+2)%3600;
+  t = (t+3)%3600;
   Serial.println(t);
+  delay(10);
 }
