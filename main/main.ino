@@ -6,8 +6,8 @@
 #define MOTOR_1_ID 0X201
 #define MOTOR_2_ID 0x202
 #define PGAIN 0.4
-#define IGAIN 0.1
-#define DGAIN 0.1
+#define IGAIN 0.
+#define DGAIN 0.
 
 struct can_frame  frame_read, frame_send;
 Controller motor_1(MOTOR_1_ID, PGAIN, IGAIN, DGAIN, &frame_read),
@@ -60,12 +60,6 @@ void loop() {
   Serial.print(Leg.get_theta());
   Serial.print("  ");
   
-  /*
-  motor_1.set_setpoint( Leg.get_phi((t/10) % 360 ) );
-  motor_1.control_flow();
-  motor_2.set_setpoint( Leg.get_theta((t/10) % 360 ) );
-  motor_2.control_flow();
-  */
   motor_1.set_setpoint( Leg.get_phi() );
   motor_1.control_flow();
   motor_2.set_setpoint( Leg.get_theta() );
@@ -80,9 +74,9 @@ void loop() {
   frame_send.data[6] = 0;
   frame_send.data[7] = 0;
   
-  mcp2515.sendMessage(&frame_send);
+  //mcp2515.sendMessage(&frame_send);
   
-  t = (t+3)%3600;
+  t = (t+2)%3600;
   Serial.println(t);
   delay(10);
 }
