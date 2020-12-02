@@ -10,7 +10,7 @@ private:
   int16_t now_pos, output, last_pos, offset, now_spd = 0, last_spd = 0;
   long acc_count=0;//------
   double Pgain, Igain, Dgain, PIDout = 0, counter = 0, Iout = 0; 
-  int32_t error_sum = 0, error, setpoint, last_error = 0, Iterm;
+  int32_t error_sum = 0, error, setpoint, last_setpoint, last_error = 0, Iterm;
   struct can_frame * frame_r;
   const int32_t motorID;
   unsigned long last_time = 0;
@@ -34,7 +34,7 @@ private:
   }
   
   void calculate_PID(){
-    PIDout  =  Pgain * error;
+    PIDout  =  Pgain * error ;
     
     error_sum = ( error_sum + error ) * (abs(error) > 300);
 
@@ -90,7 +90,6 @@ public:
     if( abs(now_spd) > 4096){
       if(now_spd > 0 && last_spd < 0) last_spd = now_spd - 8192;
       if(now_spd < 0 && last_spd > 0) last_spd = now_spd + 8192;
-      //if(now_spd * last_spd < 0) last_spd = now_spd + (last_spd/abs(last_spd))* 8192;
     }
     else last_spd = now_spd;
     
@@ -98,10 +97,8 @@ public:
     
     acc_count += last_spd;
     /*
-    Serial.print(motorID);
-    Serial.print(" ");
-    Serial.print(acc_count);
-    Serial.print(" ");
+    Serial.print("motorID: ");Serial.print(motorID);Serial.print(" ");
+    Serial.print("acc_count: ");Serial.print(acc_count);Serial.print(" ");
     */
     calculate_error();
     calculate_PID();

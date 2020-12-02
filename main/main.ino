@@ -5,15 +5,17 @@
 #define MOTOR_SEND_ID 0x200
 #define MOTOR_1_ID 0X201
 #define MOTOR_2_ID 0x202
-#define PGAIN 0.4
+/*
+#define PGAIN 0.2
 #define IGAIN 0.
-#define DGAIN 0.
-
+#define DGAIN 0.6
+*/
 struct can_frame  frame_read, frame_send;
-Controller motor_1(MOTOR_1_ID, PGAIN, IGAIN, DGAIN, &frame_read),
-           motor_2(MOTOR_2_ID, PGAIN, IGAIN, DGAIN, &frame_read);
+Controller motor_1(MOTOR_1_ID, 1, 0, 0.2, &frame_read),
+           motor_2(MOTOR_2_ID, 1, 0, 0.2, &frame_read);
 
 long t = 0;
+int lastt,nowt;
 
 Commander Leg(A_LENGHT,B_LENGHT,C_LENGHT,D_LENGHT,F_LENGHT,ALPHA_ANGLE);
 
@@ -37,9 +39,9 @@ void setup() {
 }
 
 void loop() {
-
-  Leg.UpdateXY( (t/10) % 360 );
   
+  Leg.UpdateXY( t );
+  /*
   Serial.print("X: ");
   Serial.print(Leg.getX());
   Serial.print(" Y: ");
@@ -51,15 +53,15 @@ void loop() {
   Serial.print(" Ye: ");
   Serial.print(Leg.getYe());
   Serial.print(" ");
-  
+  */
   Leg.UpdateAng();  
-  
+  /*
   Serial.print("  phi: ");
   Serial.print(Leg.get_phi());
   Serial.print("   theta: ");
   Serial.print(Leg.get_theta());
   Serial.print("  ");
-  
+  */
   motor_1.set_setpoint( Leg.get_phi() );
   motor_1.control_flow();
   motor_2.set_setpoint( Leg.get_theta() );
@@ -74,9 +76,11 @@ void loop() {
   frame_send.data[6] = 0;
   frame_send.data[7] = 0;
   
-  //mcp2515.sendMessage(&frame_send);
+  mcp2515.sendMessage(&frame_send);
+
   
-  t = (t+2)%3600;
+  //nowt = millis();Serial.println(nowt-lastt);  lastt = nowt;
+  
+  t = (t+4)%3600;
   Serial.println(t);
-  delay(10);
 }
