@@ -5,6 +5,31 @@
 #include <mcp2515.h>
 MCP2515 mcp2515(10);
 
+/* READ ME
+ * 
+ * CREATE OBJECT
+ * Controller mymotor(ID, Pgain, Igain, Dgain, pointer to CAN frame);
+ * 
+ * INIT OBJECT
+ * mymotor.boot();
+ * 
+ * SET SETPOINT
+ * mymotor.set_setpoint( setpoint in Degree );
+ * 
+ * CALCULATE PID OUTPUT
+ * mymotor.control_flow();
+ * 
+ * GET PID CONTROLLER OUTPUT CURRENT SIGNAL 
+ * mymotor.get_output() // in 16 bit
+ * 
+ *    SENT SIGNAL COMMAND THROUGH CAN bus
+ *    frame_send.data[0] = mymotor.get_output() >> 8;
+ *    frame_send.data[1] = mymotor.get_output();
+ *    ...
+ *    mcp2515.sendMessage(&frame_send);
+ 
+ */
+
 class Controller{
 private:
   int16_t now_pos, output, last_pos, offset, now_spd = 0, last_spd = 0;
